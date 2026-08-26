@@ -1,63 +1,113 @@
-name: Build & Deploy to TestFlight
+name: Build Unsigned IPA
+
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
 
 concurrency:
-  group: ${{ github.ref }}
+  group: unsigned-ipa-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Deploying to TestFlight
-    runs-on: macOS-26
+  build:
+    name: Build unsigned CodifyOne IPA
+    runs-on: macos-26
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: recursive
 
-      - name: Install WASM build tools
-        run: brew install lld
-
-      - name: Verify wasm-ld installation
+      - name: Select Xcode
+        shell: bash
         run: |
-          echo "Checking wasm-ld location..."
-          which wasm-ld || echo "wasm-ld not found in PATH"
-          ls -la /opt/homebrew/bin/wasm-ld 2>/dev/null || echo "wasm-ld not in /opt/homebrew/bin"
-          ls -la /usr/local/bin/wasm-ld 2>/dev/null || echo "wasm-ld not in /usr/local/bin"
-          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-          which wasm-ld && echo "wasm-ld found after PATH update"
+          set -euxo pipefail
 
-      - name: Deploy iOS Beta to TestFlight via Fastlane
+          if [ -d /Applications/Xcode_26.2.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+          else
+            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          fi
+
+          xcodebuild -version
+          xcodebuild -showsdks
+
+      - name: Install WASM linker
+        shell: bash
         run: |
-          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-          echo "$MATCH_DEPLOY_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && fastlane beta
-        env:
-          MATCH_DEPLOY_KEY: "${{ secrets.MATCH_DEPLOY_KEY }}"
-          APP_STORE_CONNECT_TEAM_ID: "${{ secrets.APP_STORE_CONNECT_TEAM_ID }}"
-          DEVELOPER_APP_ID: "${{ secrets.DEVELOPER_APP_ID }}"
-          DEVELOPER_APP_IDENTIFIER: "${{ secrets.DEVELOPER_APP_IDENTIFIER }}"
-          DEVELOPER_APP_EXTENSION_IDENTIFIER: "${{ secrets.DEVELOPER_APP_EXTENSION_IDENTIFIER }}"
-          DEVELOPER_PORTAL_TEAM_ID: "${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}"
-          FASTLANE_APPLE_ID: "${{ secrets.FASTLANE_APPLE_ID }}"
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: "${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}"
-          MATCH_PASSWORD: "${{ secrets.MATCH_PASSWORD }}"
-          GIT_AUTHORIZATION: "${{ secrets.GIT_AUTHORIZATION }}"
-          PROVISIONING_PROFILE_SPECIFIER: "${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}"
-          TEMP_KEYCHAIN_PASSWORD: "${{ secrets.TEMP_KEYCHAIN_PASSWORD }}"
-          TEMP_KEYCHAIN_USER: "${{ secrets.TEMP_KEYCHAIN_USER }}"
-          APPLE_KEY_ID: "${{ secrets.APPLE_KEY_ID }}"
-          APPLE_ISSUER_ID: "${{ secrets.APPLE_ISSUER_ID }}"
-          APPLE_KEY_CONTENT: "${{ secrets.APPLE_KEY_CONTENT }}"
-          JUDGE0_KEY: ""
-          JUDGE0_ENDPOINT: ""
-          DISTRIBUTE_EXTERNAL: "true"
-          XCODE_PATH: "/Applications/Xcode_26.2.app"
+          set -euxo pipefail
+          brew install lld || brew upgrade lld || true
+          echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/bin" >> "$GITHUB_PATH"
+          command -v wasm-ld
+          wasm-ld --version
 
-      - name: Upload Artifact
+      - name: Resolve Swift packages
+        shell: bash
+        run: |
+          set -euxo pipefail
+          xcodebuild \
+            -resolvePackageDependencies \
+            -project Code.xcodeproj \
+            -scheme CodifyOne
+
+      - name: Build unsigned iOS app
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          rm -rf build
+          mkdir -p build
+
+          xcodebuild \
+            -project Code.xcodeproj \
+            -scheme CodifyOne \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$PWD/build/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            clean build
+
+      - name: Package unsigned IPA
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          APP_PATH="$(find "$PWD/build/DerivedData/Build/Products/Release-iphoneos" -maxdepth 1 -type d -name '*.app' | head -n 1)"
+
+          if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
+            echo "No .app bundle was produced."
+            find "$PWD/build/DerivedData/Build/Products" -maxdepth 3 -print || true
+            exit 1
+          fi
+
+          echo "Packaging: $APP_PATH"
+
+          rm -rf Payload
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+
+          # Ensure the resulting package contains no app signature.
+          find Payload -type d -name _CodeSignature -prune -exec rm -rf {} + || true
+          find Payload -type f -name embedded.mobileprovision -delete || true
+
+          /usr/bin/zip -qry CodifyOne-unsigned.ipa Payload
+
+          echo "Created unsigned IPA:"
+          ls -lh CodifyOne-unsigned.ipa
+
+      - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ipa-build
-          path: Code.ipa
+          name: CodifyOne-unsigned-ipa
+          path: CodifyOne-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
