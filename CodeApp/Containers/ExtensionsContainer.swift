@@ -512,6 +512,10 @@ struct ExtensionsContainer: View {
 
                 NSLog("🎉 Extension installed successfully: \(installedExt.id)")
 
+                // Index the new package and (re)register it with the in-editor
+                // extension host so its contributions become live immediately.
+                await self.activateExtensionRuntime()
+
                 await MainActor.run {
                     // Refresh the installed extensions view
                     if selectedSection == .installed {
@@ -537,6 +541,17 @@ struct ExtensionsContainer: View {
         }
     }
 
+    /// Regenerates the extension index and pushes it into the running editor.
+    @MainActor
+    private func activateExtensionRuntime() async {
+        guard #available(iOS 18.0, *) else { return }
+        if let monaco = App.monacoInstance as? MonacoImplementation {
+            await monaco.reloadWebExtensions()
+        } else {
+            ExtensionRuntime.shared.reload()
+        }
+    }
+
     private func uninstallExtension(_ extensionID: String) {
         Task {
             NSLog("🗑️ Uninstalling extension: \(extensionID)")
@@ -546,6 +561,8 @@ struct ExtensionsContainer: View {
                 try await extensionInstaller.uninstall(extensionID: extensionID)
 
                 NSLog("✅ Extension uninstalled: \(extensionID)")
+
+                await self.activateExtensionRuntime()
 
                 await MainActor.run {
                     // Force view refresh

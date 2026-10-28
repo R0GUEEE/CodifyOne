@@ -21,6 +21,20 @@ class EditorService {
         webServer.addGETHandler(
             forBasePath: "/", directoryPath: directoryPath, indexFilename: "index.html",
             cacheAge: 10, allowRangeRequests: true)
+
+        // Installed VS Code extensions live in Application Support, outside the
+        // bundle. Serve them so the in-editor extension host can import their
+        // code, and (re)generate the index it reads on startup.
+        if #available(iOS 18.0, *) {
+            let extensionsDirectory = ExtensionRuntime.directory
+            try? FileManager.default.createDirectory(
+                at: extensionsDirectory, withIntermediateDirectories: true, attributes: nil)
+            ExtensionRuntime.shared.reload()
+            webServer.addGETHandler(
+                forBasePath: "/ext/", directoryPath: extensionsDirectory.path + "/",
+                indexFilename: "index.json", cacheAge: 0, allowRangeRequests: true)
+        }
+
         try? webServer.start(options: [
             GCDWebServerOption_AutomaticallySuspendInBackground: false,
             GCDWebServerOption_Port: EditorService.PORT,
@@ -391,6 +405,47 @@ class MonacoImplementation: NSObject {
     }
 }
 
+// MARK: - VS Code extensions
+
+extension MonacoImplementation {
+
+    /// Regenerates the on-disk extension index and asks the running extension
+    /// host to reconcile with it (register new packages, unload removed ones).
+    @available(iOS 18.0, *)
+    func reloadWebExtensions() async {
+        ExtensionRuntime.shared.reload()
+        _ = try? await monacoWebView.evaluateJavaScriptAsync(
+            "window.codeExtensions && window.codeExtensions.sync()"
+        )
+    }
+
+    /// Executes a command contributed by an extension.
+    /// Returns true when the command was dispatched to the extension host.
+    @available(iOS 18.0, *)
+    func executeExtensionCommand(_ command: String) async -> Bool {
+        guard
+            let encoded = command.addingPercentEncoding(
+                withAllowedCharacters: .alphanumerics)
+        else { return false }
+        let js = """
+            (async () => {
+              try {
+                const command = decodeURIComponent('\(encoded)');
+                await window.codeExtensions.executeCommand(command);
+                return true;
+              } catch (e) {
+                console.log('[extensions] command failed', String(e));
+                return false;
+              }
+            })()
+            """
+        if let result = try? await monacoWebView.evaluateJavaScriptAsync(js) {
+            return (result as? Bool) ?? false
+        }
+        return false
+    }
+}
+
 extension MonacoImplementation: WKScriptMessageHandler {
     func userContentController(
         _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
@@ -459,6 +514,16 @@ extension MonacoImplementation: WKScriptMessageHandler {
         case "Language Server Connection Dropped":
             let languageIdentifier = result["languageIdentifier"] as! String
             delegate?.editorImplementation(languageServerDidDisconnect: languageIdentifier)
+        case "Extension Ready":
+            NSLog(
+                "[Extensions] ready: \(result["id"] as? String ?? "?") v\(result["version"] as? String ?? "?")"
+            )
+        case "Extension Error":
+            NSLog(
+                "[Extensions] failed: \(result["id"] as? String ?? "?") – \(result["message"] as? String ?? "")"
+            )
+        case "Extension Unloaded":
+            NSLog("[Extensions] unloaded: \(result["id"] as? String ?? "?")")
         default:
             print("[MonacoImplementation]: Event '\(event)' not handled.")
         }

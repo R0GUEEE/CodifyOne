@@ -36,6 +36,46 @@ jobs:
           xcodebuild -version
           xcodebuild -showsdks
 
+      - name: Build editor bundle (extension host) from fork
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          # The editor web app is what carries the VS Code extension host and the
+          # `vscode` API implementation, so it is built from our fork instead of
+          # the upstream prebuilt release.
+          git clone --depth 1 https://github.com/R0GUEEE/codeapp-monaco.git _editor
+          cd _editor
+          npm ci
+          npm run build
+          cd ..
+          mkdir -p Resources
+          rm -rf Resources/monaco-textmate.bundle
+          cp -R _editor/monaco-textmate.bundle Resources/
+          test -f Resources/monaco-textmate.bundle/index.html
+          test -n "$(find Resources/monaco-textmate.bundle/assets -name 'index-*.js' | head -1)"
+
+      - name: Cache downloaded frameworks
+        uses: actions/cache@v4
+        with:
+          path: |
+            Resources/llvm
+            Resources/Term
+            Resources/PythonAux
+            Resources/NodeJS/NodeMobile.xcframework
+            Resources/NMSSH.xcframework
+            Resources/PHP
+            Resources/Java
+            Resources/cpython
+          key: frameworks-${{ runner.os }}-v1-2025.9.20
+
+      - name: Download frameworks
+        shell: bash
+        run: |
+          set -euxo pipefail
+          chmod +x downloadFrameworks.sh
+          ./downloadFrameworks.sh
+
       - name: Install WASM linker
         shell: bash
         run: |

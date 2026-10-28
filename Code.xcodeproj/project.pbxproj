@@ -19,8 +19,10 @@
 		1C4C8CDB2EA86398008E5E33 /* ExtensionsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CD92EA86398008E5E33 /* ExtensionsExtension.swift */; };
 		1C4C8CDC2EA86398008E5E33 /* ExtensionsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CD92EA86398008E5E33 /* ExtensionsExtension.swift */; };
 		1C4C8CFA2EA866AF008E5E33 /* ExtensionInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CF72EA866AF008E5E33 /* ExtensionInstaller.swift */; };
+		3343133FA6BD1F439364C512 /* ExtensionRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751AF96BE580F116627234B1 /* ExtensionRuntime.swift */; };
 		1C4C8CFB2EA866AF008E5E33 /* MarketplaceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CF82EA866AF008E5E33 /* MarketplaceService.swift */; };
 		1C4C8CFC2EA866AF008E5E33 /* ExtensionInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CF72EA866AF008E5E33 /* ExtensionInstaller.swift */; };
+		D3AF92CC65911D818140EB63 /* ExtensionRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751AF96BE580F116627234B1 /* ExtensionRuntime.swift */; };
 		1C4C8CFD2EA866AF008E5E33 /* MarketplaceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CF82EA866AF008E5E33 /* MarketplaceService.swift */; };
 		1C4C8CFF2EA86730008E5E33 /* ExtensionsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CFE2EA86730008E5E33 /* ExtensionsContainer.swift */; };
 		1C4C8D002EA86730008E5E33 /* ExtensionsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C8CFE2EA86730008E5E33 /* ExtensionsContainer.swift */; };
@@ -1513,6 +1515,7 @@
 		1C4C8CD02EA69AB8008E5E33 /* WasmerRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WasmerRuntime.xcframework; path = Resources/WasmerRuntime.xcframework; sourceTree = "<group>"; };
 		1C4C8CD92EA86398008E5E33 /* ExtensionsExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsExtension.swift; sourceTree = "<group>"; };
 		1C4C8CF72EA866AF008E5E33 /* ExtensionInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionInstaller.swift; sourceTree = "<group>"; };
+		751AF96BE580F116627234B1 /* ExtensionRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionRuntime.swift; sourceTree = "<group>"; };
 		1C4C8CF82EA866AF008E5E33 /* MarketplaceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketplaceService.swift; sourceTree = "<group>"; };
 		1C4C8CFE2EA86730008E5E33 /* ExtensionsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsContainer.swift; sourceTree = "<group>"; };
 		1C4C8D042EA88FF2008E5E33 /* CoreMLLLMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLLLMService.swift; sourceTree = "<group>"; };
@@ -2351,6 +2354,7 @@
 				1C9606B52EAA93990033D6E2 /* InlineCompletionService.swift */,
 				F97209472F46390B00DA803A /* DebuggerService.swift */,
 				1C4C8CF72EA866AF008E5E33 /* ExtensionInstaller.swift */,
+				751AF96BE580F116627234B1 /* ExtensionRuntime.swift */,
 				1C9606AC2EA9D0340033D6E2 /* CoreMLInference.swift */,
 				1C9606A92EA9D0150033D6E2 /* LLMTokenizer.swift */,
 				F9FE0DA72F59496F008DFB0E /* GGUFDequantizer.swift */,
@@ -4144,6 +4148,7 @@
 				9419697C280316C7008AAEB2 /* View+cornerRadius.swift in Sources */,
 				9419697E280316C7008AAEB2 /* MonacoIntellisenseExtension.swift in Sources */,
 				1C4C8CFA2EA866AF008E5E33 /* ExtensionInstaller.swift in Sources */,
+				3343133FA6BD1F439364C512 /* ExtensionRuntime.swift in Sources */,
 				1C4C8CFB2EA866AF008E5E33 /* MarketplaceService.swift in Sources */,
 				9474D2922B6B454900CCC530 /* EditorImplementation.swift in Sources */,
 				949D78862C33DA72006D7480 /* AppExtensionService.swift in Sources */,
@@ -4372,6 +4377,7 @@
 				94A777B7257B6A43008FE7B2 /* View+cornerRadius.swift in Sources */,
 				949B3CBB25DBCCDC00BC83B5 /* MonacoIntellisenseExtension.swift in Sources */,
 				1C4C8CFC2EA866AF008E5E33 /* ExtensionInstaller.swift in Sources */,
+				D3AF92CC65911D818140EB63 /* ExtensionRuntime.swift in Sources */,
 				1C4C8CFD2EA866AF008E5E33 /* MarketplaceService.swift in Sources */,
 				9474D2912B6B454900CCC530 /* EditorImplementation.swift in Sources */,
 				949D78872C33DA72006D7480 /* AppExtensionService.swift in Sources */,

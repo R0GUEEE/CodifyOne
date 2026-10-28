@@ -14,11 +14,14 @@ class MarketplaceService {
 
     // Using asplos.dev as proxy for VSCode Marketplace
     // This provides caching and reduces load on Microsoft's servers
+    /// Open VSX is the default registry: it implements the same gallery
+    /// protocol as the Visual Studio Marketplace, is open source, and allows
+    /// third-party clients (the Microsoft marketplace terms do not).
     private var baseURL: String {
         UserDefaults.standard.string(forKey: "extensionMarketplaceURL")
-            ?? "https://asplos.dev/api/marketplace"
+            ?? "https://open-vsx.org/vscode/gallery"
     }
-    private let fallbackURL = "https://marketplace.visualstudio.com/_apis/public/gallery"
+    private let fallbackURL = "https://open-vsx.org/vscode/gallery"
     private let apiVersion = "3.0-preview.1"
 
     // Shared URL session with caching

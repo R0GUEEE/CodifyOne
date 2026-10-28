@@ -1,50 +1,50 @@
 cd Resources
 
 # Python
-curl -OL https://github.com/bummoblizard/cpython/releases/download/1.0.1/cpython.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/bummoblizard/cpython/releases/download/1.0.1/cpython.zip
 unzip -q cpython.zip
 rm -f cpython.zip
 
 # llvm
 for lib in ar link libLLVM lld clang nm dis llc lli opt; do
-    curl -OL https://github.com/thebaselab/llvm-project/releases/download/iOS-14/$lib.xcframework.zip
+    curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/llvm-project/releases/download/iOS-14/$lib.xcframework.zip
     unzip -q $lib.xcframework.zip -d llvm
     rm -f $lib.xcframework.zip 
 done 
 
 # ios_system
 for lib in files curl_ios awk text shell tar ios_system; do
-    curl -OL https://github.com/holzschu/ios_system/releases/download/v3.0.0/$lib.xcframework.zip
+    curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/ios_system/releases/download/v3.0.0/$lib.xcframework.zip
     unzip -q $lib.xcframework.zip -d Term
     rm -f $lib.xcframework.zip 
 done
 
 # network_ios
-curl -OL https://github.com/holzschu/network_ios/releases/download/v0.2/network_ios.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/network_ios/releases/download/v0.2/network_ios.xcframework.zip
 unzip -q network_ios.xcframework.zip -d Term
 rm -f network_ios.xcframework.zip 
 
 # We are using an older version of SSH / SFTP
-curl -OL https://github.com/holzschu/ios_system/releases/download/v2.7.0/ssh_cmd.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/ios_system/releases/download/v2.7.0/ssh_cmd.xcframework.zip
 unzip -q ssh_cmd.xcframework.zip -d Term
 rm -f ssh_cmd.xcframework.zip
 
-curl -OL https://github.com/holzschu/libssh2-for-iOS/releases/download/v1.2/openssl.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/libssh2-for-iOS/releases/download/v1.2/openssl.xcframework.zip
 unzip -q openssl.xcframework.zip -d Term
 rm -f openssl.xcframework.zip
 
-curl -OL https://github.com/holzschu/libssh2-for-iOS/releases/download/v1.2/libssh2.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/libssh2-for-iOS/releases/download/v1.2/libssh2.xcframework.zip
 unzip -q libssh2.xcframework.zip -d Term
 rm -f libssh2.xcframework.zip
 
 # lg2
-curl -OL https://github.com/holzschu/libgit2/releases/download/ios_1.0/lg2.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/libgit2/releases/download/ios_1.0/lg2.xcframework.zip
 unzip -q lg2.xcframework.zip -d Term
 rm -f lg2.xcframework.zip
 
 # Python auxiliaries
 for lib in harfbuzz freetype libpng; do
-    curl -OL https://github.com/holzschu/Python-aux/releases/download/1.0/$lib.xcframework.zip
+    curl -OL --fail --retry 3 --retry-delay 2 https://github.com/holzschu/Python-aux/releases/download/1.0/$lib.xcframework.zip
     unzip -q $lib.xcframework.zip -d PythonAux
     rm -f $lib.xcframework.zip 
 done
@@ -60,48 +60,57 @@ curl -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" \
   -L -o proton_display_probe.wasm https://asplos.dev/about/proton_display_probe.wasm
 curl -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" \
   -L -o cuda_oxide_probe.wasm https://asplos.dev/about/cuda_oxide_probe.wasm
-curl -OL https://github.com/1Conan/nodejs-mobile/releases/download/v18.19.0-ios/NodeMobile.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/1Conan/nodejs-mobile/releases/download/v18.19.0-ios/NodeMobile.xcframework.zip
 unzip -q NodeMobile.xcframework.zip
 rm -f NodeMobile.xcframework.zip
 cd ..
 
 # PHP
-curl -OL https://github.com/bummoblizard/php-src/releases/download/v0.3/php.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/bummoblizard/php-src/releases/download/v0.3/php.xcframework.zip
 unzip -q php.xcframework.zip -d PHP
 rm -f php.xcframework.zip
 
 # NMSSH
-curl -OL https://github.com/thebaselab/NMSSH/releases/download/2.3.1-p5/NMSSH.xcframework.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/NMSSH/releases/download/2.3.1-p5/NMSSH.xcframework.zip
 unzip -q NMSSH.xcframework.zip
 rm -f NMSSH.xcframework.zip
 
 # Java
 mkdir -p Java
 cd Java
-curl -OL https://github.com/thebaselab/android-openjdk-build-multiarch/releases/download/v0.2/java-8-zero-frameworks-tools-with-src.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/android-openjdk-build-multiarch/releases/download/v0.2/java-8-zero-frameworks-tools-with-src.zip
 unzip -q java-8-zero-frameworks-tools-with-src.zip
 rm -f java-8-zero-frameworks-tools-with-src.zip
 cd ..
 
 # Python LSP
-curl -OL https://github.com/thebaselab/codeapp-python/releases/download/2024.8.15/python-lsp.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/codeapp-python/releases/download/2024.8.15/python-lsp.zip
 unzip -q python-lsp.zip
 rm -f python-lsp.zip
 
-# monaco editor
-curl -OL https://github.com/thebaselab/codeapp-monaco/releases/download/2025.9.20/monaco-textmate.bundle.zip
-unzip -q monaco-textmate.bundle.zip
-rm -f monaco-textmate.bundle.zip
+# monaco editor (built from the CodifyOne editor fork in CI; fall back to the
+# upstream release bundle when it has not been provided)
+if [ -d monaco-textmate.bundle ]; then
+  echo "Using pre-built monaco-textmate.bundle"
+else
+  curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/codeapp-monaco/releases/download/2025.9.20/monaco-textmate.bundle.zip
+  unzip -q monaco-textmate.bundle.zip
+  rm -f monaco-textmate.bundle.zip
+fi
 
 # Java LSP
-curl -OL https://github.com/thebaselab/codeapp-java/releases/download/2024.8.16/java-lsp.zip
+curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/codeapp-java/releases/download/2024.8.16/java-lsp.zip
 unzip -q java-lsp.zip
 rm -f java-lsp.zip
 
-mkdir -p Models
-cd Models
-curl -L -C - -o Qwen3.5-0.8B-Q8_0.gguf \
-  "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q8_0.gguf?download=true"
-cd ..
+if [ "${SKIP_MODELS:-1}" != "1" ]; then
+  mkdir -p Models
+  cd Models
+  curl -L --fail -C - -o Qwen3.5-0.8B-Q8_0.gguf \
+    "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q8_0.gguf?download=true"
+  cd ..
+else
+  echo "Skipping local models (SKIP_MODELS=1)"
+fi
 
 echo "Done!"
