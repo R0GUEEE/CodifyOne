@@ -88,7 +88,7 @@ jobs:
           echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
           echo "/usr/local/bin" >> "$GITHUB_PATH"
           /opt/homebrew/opt/llvm/bin/clang --version
-          /opt/homebrew/opt/llvm/bin/wasm-ld --version
+          /opt/homebrew/opt/lld/bin/wasm-ld --version
 
       - name: Resolve Swift packages
         shell: bash
@@ -104,7 +104,7 @@ jobs:
         env:
           # Force the Homebrew LLVM toolchain for the wasm probe build phase.
           CLANG: /opt/homebrew/opt/llvm/bin/clang
-          WASM_LD: /opt/homebrew/opt/llvm/bin/wasm-ld
+          WASM_LD: /opt/homebrew/opt/lld/bin/wasm-ld
         run: |
           set -euxo pipefail
 
