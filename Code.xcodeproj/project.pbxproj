@@ -1022,8 +1022,6 @@
 		F9FE0DB32F594A00008DFB0E /* ane_model_compiler.m in Sources */ = {isa = PBXBuildFile; fileRef = F9FE0DB72F594A00008DFB0E /* ane_model_compiler.m */; };
 		F9FE0DBB2F594A00008DFB0E /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9FE0DBA2F594A00008DFB0E /* IOSurface.framework */; };
 		F9FE0DBC2F594A00008DFB0E /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9FE0DBA2F594A00008DFB0E /* IOSurface.framework */; };
-		F9FE0DBE2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf in Resources */ = {isa = PBXBuildFile; fileRef = F9FE0DBD2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf */; };
-		F9FE0DBF2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf in Resources */ = {isa = PBXBuildFile; fileRef = F9FE0DBD2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf */; };
 		FFD081BB29260B00001D9373 /* Libgit2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD081BA29260B00001D9373 /* Libgit2Error.swift */; };
 		FFD081BC29260B00001D9373 /* Libgit2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD081BA29260B00001D9373 /* Libgit2Error.swift */; };
 /* End PBXBuildFile section */
@@ -2190,7 +2188,6 @@
 		F9FE0DB72F594A00008DFB0E /* ane_model_compiler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ane_model_compiler.m; sourceTree = "<group>"; };
 		F9FE0DB82F594A00008DFB0E /* ane_model_compiler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ane_model_compiler.h; sourceTree = "<group>"; };
 		F9FE0DBA2F594A00008DFB0E /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
-		F9FE0DBD2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Qwen3.5-0.8B-Q8_0.gguf"; sourceTree = "<group>"; };
 		FFD081BA29260B00001D9373 /* Libgit2Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Libgit2Error.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -3505,7 +3502,6 @@
 		F9FE0DC02F594A00008DFB0E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				F9FE0DBD2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -3785,7 +3781,6 @@
 				C0DA0E012F66040100000001 /* rust_toolchain.wasm in Resources */,
 				C0DA0F012F66050100000001 /* RustWasi in Resources */,
 				C0DA0D012F66030100000001 /* proton_display_probe.wasm in Resources */,
-				F9FE0DBE2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf in Resources */,
 				941969A6280316C7008AAEB2 /* terminal.bundle in Resources */,
 				941969A7280316C7008AAEB2 /* LaunchScreen.storyboard in Resources */,
 				941969A8280316C7008AAEB2 /* Assets.xcassets in Resources */,
@@ -3827,7 +3822,6 @@
 				C0DA0E022F66040100000002 /* rust_toolchain.wasm in Resources */,
 				C0DA0F022F66050100000002 /* RustWasi in Resources */,
 				C0DA0D022F66030100000002 /* proton_display_probe.wasm in Resources */,
-				F9FE0DBF2F594A00008DFB0E /* Qwen3.5-0.8B-Q8_0.gguf in Resources */,
 				94B3D6DE25F77AFE00C4F2B1 /* Library in Resources */,
 				948D127C2583F734008F877A /* terminal.bundle in Resources */,
 				94A56835257CC60E008A6530 /* LaunchScreen.storyboard in Resources */,

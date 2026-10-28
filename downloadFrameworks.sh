@@ -103,6 +103,11 @@ curl -OL --fail --retry 3 --retry-delay 2 https://github.com/thebaselab/codeapp-
 unzip -q java-lsp.zip
 rm -f java-lsp.zip
 
+# Local GGUF models are opt-in. The Xcode project intentionally does NOT list
+# any .gguf file in Copy Bundle Resources (that made CI fail with
+# "CpResource ... Qwen3.5-0.8B-Q8_0.gguf: No such file or directory").
+# Dropping a model here additionally bundles it for local runs; at runtime any
+# .gguf under the app's Documents/Models directory is discovered as well.
 if [ "${SKIP_MODELS:-1}" != "1" ]; then
   mkdir -p Models
   cd Models
