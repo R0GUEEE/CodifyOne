@@ -98,6 +98,10 @@ struct ExtensionsContainer: View {
                     Button(action: openSettings) {
                         Label("Extension Settings", systemImage: "gear")
                     }
+                    Divider()
+                    Button(action: { reloadExtensions() }) {
+                        Label("Reload Extensions", systemImage: "arrow.triangle.2.circlepath")
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                         .font(.system(size: 16))
@@ -193,6 +197,10 @@ struct ExtensionsContainer: View {
                         uninstallExtension(ext.id)
                     }
                 }
+            }
+
+            if #available(iOS 18.0, *) {
+                ExtensionRuntimeSection()
             }
 
             if installedUserExtensions.isEmpty && builtInExtensions.isEmpty {
@@ -539,6 +547,11 @@ struct ExtensionsContainer: View {
                 }
             }
         }
+    }
+
+    /// Reloads the editor's extension host from the on-disk index.
+    private func reloadExtensions() {
+        Task { await activateExtensionRuntime() }
     }
 
     /// Regenerates the extension index and pushes it into the running editor.
@@ -896,4 +909,81 @@ struct ExtensionInfo: Identifiable {
     var downloads: Int?
     var rating: Double?
     var isEnabled: Bool
+}
+
+// MARK: - Extension runtime status
+
+/// Shows which installed packages are actually loaded into the editor's
+/// extension host, and lets the user enable/disable them.
+@available(iOS 18.0, *)
+private struct ExtensionRuntimeSection: View {
+    @EnvironmentObject var App: MainApp
+    @ObservedObject private var runtime = ExtensionRuntime.shared
+
+    var body: some View {
+        Group {
+            if !runtime.packages.isEmpty {
+                SectionHeader(title: "Active in Editor", count: runtime.packages.count)
+                    .padding(.top, 16)
+
+                ForEach(runtime.packages) { package in
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(
+                            systemName: package.enabled
+                                ? "checkmark.seal.fill" : "pause.circle"
+                        )
+                        .font(.system(size: 12))
+                        .foregroundColor(
+                            package.enabled
+                                ? Color.init(id: "textLink.activeForeground")
+                                : .secondary
+                        )
+                        .padding(.top, 2)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(package.displayName ?? package.id)
+                                .font(.system(size: 12, weight: .medium))
+                                .lineLimit(1)
+
+                            if let reason = package.unsupportedReason {
+                                Text(reason)
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.orange)
+                                    .lineLimit(2)
+                            } else {
+                                Text(
+                                    "v\(package.version) · \(package.commands.count) command(s)"
+                                )
+                                .font(.system(size: 10))
+                                .foregroundColor(.secondary)
+                            }
+                        }
+
+                        Spacer()
+
+                        Toggle(
+                            "",
+                            isOn: Binding(
+                                get: { package.enabled },
+                                set: { newValue in
+                                    runtime.setEnabled(package.id, enabled: newValue)
+                                    Task { await reload() }
+                                }
+                            )
+                        )
+                        .labelsHidden()
+                        .scaleEffect(0.8)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 4)
+                }
+            }
+        }
+    }
+
+    private func reload() async {
+        if let monaco = App.monacoInstance as? MonacoImplementation {
+            await monaco.reloadWebExtensions()
+        }
+    }
 }

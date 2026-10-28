@@ -19,8 +19,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          submodules: recursive
+          # Submodules are vendored as xcframeworks under Resources/; cloning the
+          # wasmer/proton/hetGPU sources recursively added ~10 minutes per run.
+          fetch-depth: 1
 
       - name: Select Xcode
         shell: bash
