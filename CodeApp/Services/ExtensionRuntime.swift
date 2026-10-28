@@ -100,7 +100,7 @@ final class ExtensionRuntime: ObservableObject {
     func reload() -> [Package] {
         let fm = FileManager.default
         var scanned: [Package] = []
-        var error: String?
+        var failureMessage: String?
 
         do {
             try fm.createDirectory(
@@ -160,13 +160,13 @@ final class ExtensionRuntime: ObservableObject {
             }
 
             try writeIndex(packages: scanned)
-        } catch {
-            error = error.localizedDescription
-            NSLog("ExtensionRuntime: reload failed: \(error)")
+        } catch let reloadError {
+            failureMessage = reloadError.localizedDescription
+            NSLog("ExtensionRuntime: reload failed: \(reloadError)")
         }
 
         packages = scanned
-        lastError = error
+        lastError = failureMessage
         lastRefreshed = Date()
         NSLog("ExtensionRuntime: \(scanned.count) extension(s) indexed")
         return scanned
