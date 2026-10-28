@@ -77,15 +77,18 @@ jobs:
           chmod +x downloadFrameworks.sh
           ./downloadFrameworks.sh
 
-      - name: Install WASM linker
+      - name: Install WASM toolchain
         shell: bash
         run: |
           set -euxo pipefail
-          brew install lld || brew upgrade lld || true
+          # Xcode's clang has no wasm32 backend, and the "Generate WASM Probe
+          # Resources" phase needs one, so install LLVM from Homebrew.
+          brew install llvm lld || brew upgrade llvm lld || true
+          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH"
           echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
           echo "/usr/local/bin" >> "$GITHUB_PATH"
-          command -v wasm-ld
-          wasm-ld --version
+          /opt/homebrew/opt/llvm/bin/clang --version
+          /opt/homebrew/opt/llvm/bin/wasm-ld --version
 
       - name: Resolve Swift packages
         shell: bash
@@ -98,6 +101,10 @@ jobs:
 
       - name: Build unsigned iOS app
         shell: bash
+        env:
+          # Force the Homebrew LLVM toolchain for the wasm probe build phase.
+          CLANG: /opt/homebrew/opt/llvm/bin/clang
+          WASM_LD: /opt/homebrew/opt/llvm/bin/wasm-ld
         run: |
           set -euxo pipefail
 
